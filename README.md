@@ -1,9 +1,14 @@
 # Kordra-Agent
 
-Lightweight remote-device agent for [Kordra](https://github.com/KordraProject/Kordra). **Pre-alpha.**
+Separate lightweight device agent for [Kordra](https://github.com/KordraProject/Kordra).
 
-This first implementation exposes **only local diagnostic endpoints** until secure pairing, identity and authorization are ready. It does not expose an unauthenticated remote execution API.
+**Current state: pre-alpha.** Only loopback diagnostic endpoints are available. No remote code execution, download dispatch, credential enrollment or remote management until authenticated pairing has been implemented.
 
-All builds/tests run exclusively on GitHub-hosted Actions runners. No personal server is used for development, staging or builds.
+## Structure
+- `apps/kordra-agent`: Rust headless service.
+- `docs/ARCHITECTURE.md`: planned identity, pairing and communication design.
+- `.github/workflows`: GitHub-hosted Windows/Linux checks and headless artifacts.
 
-See [architecture](docs/ARCHITECTURE.md) and [security milestones](docs/ROADMAP.md).
+Kordra-Agent shares a **versioned API protocol** with Kordra rather than copying its download engines.
+
+Builds and tests run exclusively through GitHub-hosted runners: no external servers, local machines, VPS or self-hosted runners.
