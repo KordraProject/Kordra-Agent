@@ -1,13 +1,14 @@
 # Milestones
 
-- [x] Separate repository and Rust workspace.
-- [x] Local-only /health, /v1/info, /metrics diagnostics.
-- [x] GitHub-hosted CI and headless artifact workflow.
-- [ ] Green CI across Linux and Windows.
+- [x] Independent Rust agent repository.
+- [x] Loopback-only /health, /v1/info, /metrics.
+- [x] Green GitHub-hosted Rust CI on Linux and Windows.
+- [x] CI workflow to package pre-alpha headless agent for Windows x64, Linux x64/arm64 and tagged releases.
+- [ ] Verify headless artifacts CI.
 - [ ] Versioned agent-controller protocol.
-- [ ] Authenticated device enrollment and revocation; TLS credentials.
-- [ ] Supervising installed Kordra daemon and negotiating capabilities.
-- [ ] Device status, events, metrics and remote task commands.
-- [ ] Outbound session mode for NAT behind private VPN or optional relay.
-- [ ] Windows service, Linux systemd packaging, auto-update with rollback.
-- [ ] Signed release artifacts and multi-arch builds.
+- [ ] Authenticated device enrollment, token/certificate rotation and revocation.
+- [ ] Supervising local installed Kordra daemon and negotiating capabilities.
+- [ ] Device status, events, metrics and scoped remote task commands.
+- [ ] Agent-initiated session mode for NAT and optional relay without mandatory central server.
+- [ ] Windows service, Linux systemd packaging and auto-update with rollback.
+- [ ] Signed release artifacts, portable and installer packages.
