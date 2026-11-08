@@ -46,7 +46,6 @@ jobs:
           name: kordra-agent-${{ matrix.triple }}
           path: packages/*.zip
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
     needs: binary
     runs-on: ubuntu-24.04
     permissions:
@@ -57,8 +56,29 @@ jobs:
           pattern: kordra-agent-*
           path: assets
           merge-multiple: true
+      - name: Generate SHA-256 manifest and verify expected platforms
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          assets = Path("assets")
+          triples = ("x86_64-pc-windows-msvc", "x86_64-unknown-linux-gnu", "aarch64-unknown-linux-gnu")
+          required = [assets / f"kordra-agent-{triple}.zip" for triple in triples]
+          missing = [str(p) for p in required if not p.is_file()]
+          if missing:
+              raise SystemExit(f"Refusing incomplete release; missing: {missing}")
+          (assets / "SHA256SUMS.txt").write_text("".join(
+              f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n"
+              for p in sorted(required)
+          ))
+          PY
       - uses: softprops/action-gh-release@v2
         with:
-          files: assets/*.zip
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || format('v0.1.0-dev.{0}', github.run_number) }}
+          target_commitish: ${{ github.sha }}
+          name: Kordra-Agent pre-alpha ${{ github.run_number }}
+          files: assets/*
           prerelease: true
           generate_release_notes: true
+          fail_on_unmatched_files: true
