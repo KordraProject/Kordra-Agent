@@ -1,15 +1,17 @@
-# Agent architecture
+# Kordra-Agent architecture
 
-The agent is a separate headless Rust binary for a device running Kordra.
+The independent agent is designed to manage a **local** Kordra headless instance and later communicate securely with authorized remote controllers.
 
-Planned workflow:
-1. Discover a local Kordra daemon over loopback.
-2. User authorizes one-time pairing through the controller.
-3. Exchange short-lived device identity credentials and pin the controller identity.
-4. Establish authenticated encrypted communications over LAN/VPN or outbound agent-initiated transport.
-5. Expose **capability-scoped** calls for health, progress, task control and metadata.
-6. Rotate and revoke device credentials; report connectivity and error metrics.
+## Implemented (pre-alpha)
+- Rust headless binary with loopback-only HTTP listener.
+- Local `GET /health`, `GET /v1/info`, and Prometheus `GET /metrics`.
+- Local Kordra daemon health probe at configurable `KORDRA_DAEMON_URL`, restricted to loopback HTTP(S) URLs.
+- Optional `KORDRA_API_TOKEN` used only for requests to the local daemon.
+- `kordra_agent_daemon_online` gauge and `daemon_online` in the info response.
 
-The controller does not require a vendor-hosted server. Nodes behind NAT need LAN/VPN connectivity or an optional authenticated relay.
+## Not yet supported
+Remote pairing, public listener, remote task administration, agent-initiated transport, certificate management, controlled Kordra installation and daemon supervision. The local read-only diagnostic API is **not** a substitute for authentication. Do not publish it.
 
-Agent **does not** duplicate download engines or Kordra's database. Its package is independently versioned; protocol compatibility is explicit. Until the pairing flow, authorization and permission checks exist, the service is **strictly loopback only**, and remote execution is intentionally unavailable.
+Planned remote communication requires one-time pairing, capability-scoped identities, credential rotation/revocation, mutual authentication and a versioned protocol contract. No mandatory central server; LAN/VPN or optional outbound relay.
+
+Tests and builds run only on GitHub-hosted runners; no personal or production servers are used.
