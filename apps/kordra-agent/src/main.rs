@@ -25,7 +25,7 @@ fn validate_daemon_url(raw: &str) -> Result<Url, &'static str> {
         return Err("daemon URL must not include credentials, query or fragment");
     }
     let loopback = url.host_str().is_some_and(|host| {
-        host == "localhost" || host.parse::<IpAddr>().is_ok_and(|ip| ip.is_loopback())
+        host == "localhost" || host.trim_start_matches('[').trim_end_matches(']').parse::<IpAddr>().is_ok_and(|ip| ip.is_loopback())
     });
     if !loopback { return Err("daemon URL must resolve to loopback only"); }
     Ok(url)
